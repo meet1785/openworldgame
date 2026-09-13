@@ -74,3 +74,59 @@ void AALWeaponBase::Reload()
 		ReserveAmmo -= AmmoToLoad;
 	}
 }
+
+bool AALWeaponBase::AddAttachment(AALWeaponAttachmentBase* NewAttachment)
+{
+	if (!NewAttachment) return false;
+
+	EAttachmentType Type = NewAttachment->AttachmentType;
+
+	// Remove existing attachment of this type if it exists
+	if (ActiveAttachments.Contains(Type))
+	{
+		RemoveAttachment(Type);
+	}
+
+	// Attach physically to the weapon mesh
+	FName SocketName;
+	switch (Type)
+	{
+		case EAttachmentType::Optic: SocketName = "SightSocket"; break;
+		case EAttachmentType::Muzzle: SocketName = "MuzzleSocket"; break;
+		case EAttachmentType::Grip: SocketName = "GripSocket"; break;
+		default: SocketName = "None"; break;
+	}
+
+	NewAttachment->AttachToComponent(WeaponMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
+	ActiveAttachments.Add(Type, NewAttachment);
+
+	return true;
+}
+
+void AALWeaponBase::RemoveAttachment(EAttachmentType Type)
+{
+	if (ActiveAttachments.Contains(Type))
+	{
+		AALWeaponAttachmentBase* OldAttachment = ActiveAttachments[Type];
+		OldAttachment->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		OldAttachment->Destroy(); // Or return to inventory
+		ActiveAttachments.Remove(Type);
+	}
+}
+
+FWeaponStats AALWeaponBase::GetModifiedStats() const
+{
+	FWeaponStats ModStats = WeaponStats;
+
+	for (const auto& Pair : ActiveAttachments)
+	{
+		AALWeaponAttachmentBase* Attachment = Pair.Value;
+		if (Attachment)
+		{
+			ModStats.MaxMagazine += Attachment->ExtraMagazineCapacity;
+			// Multiply other stats like recoil and range
+		}
+	}
+
+	return ModStats;
+}

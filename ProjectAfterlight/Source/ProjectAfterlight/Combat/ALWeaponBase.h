@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Combat/ALWeaponAttachmentBase.h"
 #include "ALWeaponBase.generated.h"
 
 class USkeletalMeshComponent;
@@ -72,4 +73,18 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	virtual void Reload();
+
+	// Attachment System
+	UFUNCTION(BlueprintCallable, Category = "Combat|Attachments")
+	bool AddAttachment(class AALWeaponAttachmentBase* NewAttachment);
+
+	UFUNCTION(BlueprintCallable, Category = "Combat|Attachments")
+	void RemoveAttachment(EAttachmentType Type);
+
+	UFUNCTION(BlueprintPure, Category = "Combat|Attachments")
+	FWeaponStats GetModifiedStats() const;
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon Data")
+	TMap<EAttachmentType, class AALWeaponAttachmentBase*> ActiveAttachments;
 };

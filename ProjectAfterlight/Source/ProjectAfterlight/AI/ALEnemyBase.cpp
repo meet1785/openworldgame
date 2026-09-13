@@ -41,12 +41,27 @@ void AALEnemyBase::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus
 	// Send data to Blackboard via AIController
 	if (Stimulus.WasSuccessfullySensed())
 	{
-		// Sensed target (Player or Distraction)
+		bIsAwareOfPlayer = true;
 		// Set Blackboard Key "TargetActor"
 	}
 	else
 	{
 		// Lost sight/sound of target
+		// Note: AI usually stays aware for a while after losing sight. This is simplified.
+		// bIsAwareOfPlayer = false; 
 		// Update Blackboard Key "LastKnownLocation"
 	}
+}
+
+void AALEnemyBase::ReceiveTakedown()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s was taken down stealthily!"), *GetName());
+	
+	// Trigger death animation, disable collision, disable AI logic
+	if (AIPerception)
+	{
+		AIPerception->Deactivate();
+	}
+	
+	// Set health to 0 or destroy after anim
 }

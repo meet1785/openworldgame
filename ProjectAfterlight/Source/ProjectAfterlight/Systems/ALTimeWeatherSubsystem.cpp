@@ -1,4 +1,5 @@
 #include "Systems/ALTimeWeatherSubsystem.h"
+#include "Systems/ALEnvironmentController.h"
 
 void UALTimeWeatherSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -47,6 +48,14 @@ void UALTimeWeatherSubsystem::SetWeatherState(EWeatherState NewState)
 
 void UALTimeWeatherSubsystem::UpdateSky()
 {
-	// Locate the ADirectionalLight representing the sun and update its pitch/yaw based on CurrentTime24h
-	// Locate ASkyLight to recapture or adjust intensity
+	if (ActiveController)
+	{
+		ActiveController->UpdateTimeOfDay(CurrentTime24h);
+	}
+}
+
+void UALTimeWeatherSubsystem::RegisterEnvironmentController(AALEnvironmentController* Controller)
+{
+	ActiveController = Controller;
+	UpdateSky(); // Initial update
 }

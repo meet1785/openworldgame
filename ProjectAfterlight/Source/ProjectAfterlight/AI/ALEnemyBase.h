@@ -42,4 +42,15 @@ protected:
 
 public:
 	UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
+
+	// Stealth Hooks
+	UFUNCTION(BlueprintCallable, Category = "Stealth")
+	void ReceiveTakedown();
+
+	UFUNCTION(BlueprintPure, Category = "Stealth")
+	bool IsAwareOfPlayer() const { return bIsAwareOfPlayer; }
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stealth")
+	bool bIsAwareOfPlayer = false;
 };

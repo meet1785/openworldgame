@@ -46,4 +46,10 @@ protected:
 
 	// Internal logic to update Directional Light and SkyAtmosphere
 	void UpdateSky();
+
+	UPROPERTY()
+	class AALEnvironmentController* ActiveController;
+
+public:
+	void RegisterEnvironmentController(class AALEnvironmentController* Controller);
 };
