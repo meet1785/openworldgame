@@ -1,8 +1,11 @@
 #include "Core/AfterlightGameMode.h"
+#include "Core/ALPlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 
 AAfterlightGameMode::AAfterlightGameMode()
 {
+	PlayerControllerClass = AALPlayerController::StaticClass();
+	
 	// Set default pawn class to our character BP later
 	// static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Characters/Player/BP_PlayerCharacter"));
 	// if (PlayerPawnBPClass.Class != NULL)
